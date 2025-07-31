@@ -1,0 +1,7 @@
+openai-whisper
+tensorflow
+tensorflow-hub
+sounddevice
+numpy
+scipy
+pandas
