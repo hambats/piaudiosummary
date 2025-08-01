@@ -23,7 +23,8 @@ def audio_callback(indata, frames, time, status):
     q.put(indata.copy())
 
 def classify_and_transcribe(audio_data, samplerate):
-    # Save temp WAV
+    """Classify audio and transcribe segments containing speech."""
+
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     wav_path = f"data/{timestamp}.wav"
     write(wav_path, samplerate, audio_data)
@@ -34,11 +35,17 @@ def classify_and_transcribe(audio_data, samplerate):
     yamnet_classes = pd.read_csv(
         hub.resolve("https://storage.googleapis.com/audioset/yamnet/yamnet_class_map.csv")
     )
+
     top_class = yamnet_classes['display_name'][scores_np.mean(axis=0).argmax()]
 
-    # Transcribe with Whisper
+    # Only transcribe if speech is detected
+    if "speech" not in top_class.lower():
+        return
+
     result = whisper_model.transcribe(wav_path)
     transcript = result['text'].strip()
+    if not transcript:
+        return
 
     summary = {
         "time": timestamp,
