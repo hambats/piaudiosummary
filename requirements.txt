@@ -5,3 +5,6 @@ sounddevice
 numpy
 scipy
 pandas
+transformers
+torch
+langdetect
