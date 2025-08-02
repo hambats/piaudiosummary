@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  listener:
+    build:
+      context: .
+      dockerfile: Dockerfile.pi
+    container_name: pi_listener
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    devices:
+      - "/dev/snd:/dev/snd"
+    environment:
+      - TZ=America/New_York
+    stdin_open: true
+    tty: true
